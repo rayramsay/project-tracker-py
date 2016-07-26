@@ -63,7 +63,20 @@ def get_project_by_title(title):
 
 def get_grade_by_github_title(github, title):
     """Print grade student received for a project."""
-    pass
+    QUERY = """
+        SELECT student_github, project_title, grade
+        FROM grades
+        WHERE student_github = :github 
+                                AND project_title = :title
+        """
+    db_cursor = db.session.execute(QUERY, {'github': github, 
+                                           'title': title})
+
+    # Key in dictionary needs to match :placeholder in query; value in dictionary
+    # needs to match parameter in function.
+
+    row = db_cursor.fetchone()
+    print "Student Github: {}\nProject Title: {}\nGrade Received: {}".format(row[0], row[1], row[2])
 
 
 def assign_grade(github, title, grade):
@@ -106,6 +119,6 @@ if __name__ == "__main__":
     app = Flask(__name__)
     connect_to_db(app)
 
-    handle_input()
+    #handle_input()
 
     db.session.close()
